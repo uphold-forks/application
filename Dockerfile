@@ -1,16 +1,15 @@
-FROM ubuntu:latest
+FROM seegno/node:7-slim
 
-RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y git npm nodejs nodejs-legacy
+USER root
 
-RUN adduser --system app --home /app
-USER app
+RUN apk --no-cache --virtual add sqlite
 
-WORKDIR /app
-RUN git clone https://github.com/timeoff-management/application.git timeoff-management
+USER node
 
-WORKDIR /app/timeoff-management
 RUN npm install
 
-EXPOSE 3000
-CMD npm start
+COPY . ./
+
+RUN npm rebuild
+
+CMD ["bin/wwww"]
